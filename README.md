@@ -3,74 +3,95 @@
 ## Overview
 This project is a prompt-engineering–driven regulatory reasoning assistant designed to support **bank loan officers** in interpreting supervisory expectations under the **FDIC RMS Manual of Examination Policies – Section 3.2 (Loans)**.
 
-The system does **not** automate loan approvals, rejections, pricing, or credit decisions. Instead, it provides **document-grounded, examiner-focused regulatory analysis** suitable for audit and compliance review.
+The system is now a **standalone Python application** with a polished **Gradio web interface**, designed for secure and efficient regulatory analysis.
 
 ---
 
-## Key Objectives
-- Demonstrate how **prompt engineering alone** can control LLM behavior in regulated banking environments
-- Enforce **single-source regulatory grounding** using FDIC Section 3.2
-- Prevent hallucinations, unsupported assumptions, and automated credit decisions
-- Support **loan officer regulatory interpretation**, not underwriting or advisory tasks
+## Key Features
+- **Standalone Application**: Transitioned from Jupyter notebook to a high-performance Python script (`app.py`).
+- **Secure Configuration**: Uses `.env` for API key and base URL management, ensuring credentials are never exposed in source control.
+- **Intelligent File Handling**: 
+  - Direct text extraction for **PDF** and **TXT** files for maximum accuracy.
+  - Integrated **Tesseract OCR** for image-based documents and scans.
+- **Gradio Web Interface**: Modern, responsive UI with real-time analysis and regulatory observation outputs.
+- **Regulatory Grounding**: Enforces strict adherence to the **FDIC RMS Manual – Section 3.2** to prevent hallucinations.
+
+---
+
+## Technical Objectives
+- Demonstrate how **prompt engineering alone** can control LLM behavior in regulated banking environments.
+- Enforce **single-source regulatory grounding** using the extracted FDIC Section 3.2 text.
+- Provide **document-grounded analysis** suitable for audit and compliance review.
 
 ---
 
 ## Scope and Constraints
 The assistant is explicitly designed to:
-- Analyze loan-related questions and inputs under FDIC Section 3.2
-- Explain regulatory concepts defined in the policy
-- Identify applicable sections and subsections
-- Flag missing information or potential policy deviations
-- Acknowledge when regulatory guidance is insufficient or out of scope
+- Analyze loan-related inputs under FDIC Section 3.2.
+- Explain regulatory concepts and identify applicable subsections.
+- Flag missing information or potential policy deviations.
 
 The assistant explicitly does **not**:
-- Approve or reject loans
-- Assign credit scores, risk ratings, or pricing
-- Provide financial, business, or operational advice
-- Use external knowledge or non-FDIC sources
+- Approve or reject loans or provide financial advice.
+- Use external knowledge beyond the provided FDIC source.
 
 ---
 
 ## Regulatory Source of Truth
 - **FDIC RMS Manual of Examination Policies – Section 3.2 (Loans)**  
-  This document is treated as the **single and exclusive authoritative source** for all responses.
+  Grounding is provided via `manualy_converted_text.txt`, which contains the full extracted regulatory text.
 
 ---
 
-## Evaluation Methodology
-The project includes an automated evaluation notebook that:
-- Assesses **system prompt quality** (task clarity, constraint enforcement, document grounding)
-- Assesses **response quality** against regulatory ground truth
-- Uses lightweight judge models to validate prompt effectiveness rather than model intelligence
+## Setup and Installation
 
-This ensures behavior is driven by **prompt design**, not model capability.
+### Prerequisites
+- Python 3.8+
+- Tesseract OCR (Optional, for image processing)
+
+### Installation
+1. Clone the repository and navigate to the project folder.
+2. Initialize and activate a virtual environment:
+   ```powershell
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   ```
+3. Install dependencies:
+   ```powershell
+   pip install -r requirements.txt
+   ```
+   *(Note: Ensure `gradio`, `openai`, `pdfplumber`, `pytesseract`, and `python-dotenv` are installed)*
+
+4. Create a `.env` file in the root directory:
+   ```env
+   API_KEY=your_api_key_here
+   BASE_URL=your_api_base_url_here
+   ```
 
 ---
 
-## Project Files
-- `Loan_Regulatory_Reasoning_Assistant.ipynb`  
-  Main notebook containing prompt definitions, evaluation logic, and scoring
-- `manualy_converted_text.txt`  
-  Extracted regulatory reference text used for grounding
-- `section3-2.pdf`  
-  FDIC RMS Manual – Section 3.2 (Loans)
+## Running the Application
+To launch the assistant, run:
+```powershell
+python app.py
+```
+Access the web interface at `http://127.0.0.1:7860`.
 
 ---
 
-## Intended Users
-- Bank loan officers
-- Compliance and risk teams
-- Regulatory and supervisory review contexts
-- Academic and training environments focused on regulated AI systems
+## Project Structure
+- `app.py`: Main application script (Gradio UI + LLM Logic).
+- `manualy_converted_text.txt`: Extracted regulatory reference text.
+- `.env`: (Local only) Secure credentials.
 
 ---
 
 ## Disclaimer
-This project is for **educational and demonstrative purposes only**.  
-It does not constitute legal, regulatory, financial, or lending advice.
+This project is for **educational and demonstrative purposes only**. It does not constitute legal or financial advice.
 
 ---
 
 ## Author
 Capstone Project – Navigate Labs  
 Prompt Engineering for Regulated Financial Systems
+
