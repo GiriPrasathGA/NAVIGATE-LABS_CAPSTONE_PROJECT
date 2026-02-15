@@ -2,6 +2,7 @@ import os
 import json
 import gradio as gr
 import pytesseract
+import pdfplumber
 from PIL import Image
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -18,23 +19,16 @@ load_dotenv()
 # OpenAI-compatible API Setup
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
-    base_url=os.getenv("OPENAI_BASE_URL", "https://apidev.navigatelabsai.com")
+    base_url=os.getenv("OPENAI_BASE_URL")
 )
 
 MODEL_NAME = "gpt-4.1-nano"
 
 # --- DATA LOADING ---
 
-def load_fdic_policy(file_path):
-    """Loads the FDIC policy text from a file."""
-    if not os.path.exists(file_path):
-        print(f"Warning: {file_path} not found. Using empty string.")
-        return ""
-    with open(file_path, 'r', encoding='utf-8') as f:
-        return f.read()
-
-# Load the full text from the manually converted file
-FDIC_SECTION_3_2 = load_fdic_policy("manualy_converted_text.txt")
+# Load FDIC Section 3.2 Text
+with open("manualy_converted_text.txt", "r", encoding="utf-8") as file:
+    FDIC_SECTION_3_2 = file.read()
 
 SYSTEM_PROMPT_v1 = """
 #SYSTEM/ROLE PROMPT
@@ -103,15 +97,25 @@ def chatbot_response(user_query, application_form_data):
         return f"Error during API call: {str(e)}"
 
 def gradio_handler(application_file, user_query):
-    """Handles Gradio inputs, processes OCR, and calls the chatbot."""
+    """Handles Gradio inputs, processes PDF/TXT/Images, and calls the chatbot."""
     application_text = ""
 
     if application_file is not None:
+        file_ext = os.path.splitext(application_file.name)[1].lower()
+        
         try:
-            image = Image.open(application_file)
-            application_text = pytesseract.image_to_string(image)
+            if file_ext == ".pdf":
+                with pdfplumber.open(application_file) as pdf:
+                    application_text = "\n".join([page.extract_text() for page in pdf.pages if page.extract_text()])
+            elif file_ext == ".txt":
+                with open(application_file, "r", encoding="utf-8") as f:
+                    application_text = f.read()
+            else:
+                # Fallback to OCR for images
+                image = Image.open(application_file)
+                application_text = pytesseract.image_to_string(image)
         except Exception as e:
-            return f"Error during OCR processing: {str(e)}. Please ensure Tesseract is installed."
+            return f"Error processing file ({file_ext}): {str(e)}"
 
     return chatbot_response(user_query, application_text)
 
@@ -184,8 +188,8 @@ with gr.Blocks() as demo:
             gr.HTML("<div class='card'><h3>📄 Inputs</h3>")
 
             application_file = gr.File(
-                label="Loan Application Form (Image Upload)",
-                file_types=[".png", ".jpg", ".jpeg"]
+                label="Loan Application Form (Image, PDF, or TXT)",
+                file_types=[".png", ".jpg", ".jpeg", ".pdf", ".txt"]
             )
 
             user_query = gr.Textbox(
