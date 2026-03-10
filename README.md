@@ -1,76 +1,46 @@
-# AI-Powered Regulatory Loan Evaluation Assistant (FDIC Section 3.2)
+# FDIC Loan Regulatory Reasoning Assistant
 
-## Overview
-This project is a prompt-engineering–driven regulatory reasoning assistant designed to support **bank loan officers** in interpreting supervisory expectations under the **FDIC RMS Manual of Examination Policies – Section 3.2 (Loans)**.
+An AI-powered regulatory compliance tool designed to interpret the **FDIC RMS Manual – Section 3.2 (Loans)**. This assistant helps users understand regulatory expectations, identify documentation gaps, and highlight areas requiring clarification under FDIC guidance.
 
-The system does **not** automate loan approvals, rejections, pricing, or credit decisions. Instead, it provides **document-grounded, examiner-focused regulatory analysis** suitable for audit and compliance review.
+## 🚀 Features
 
----
+- **Grounded Reasoning**: System responses are strictly mapped to FDIC Section 3.2 policies.
+- **OCR Integration**: Extract text from loan applications (images) for regulatory analysis.
+- **Compliance Guardrails**: Explicitly avoids loan approval, rejection, or recommendations.
+- **Automated Evaluation**: Built-in Judge-LLM pipeline to evaluate accuracy, faithfulness, and professional tone.
+- **Interactive Dashboard**: Professional Gradio-based web interface.
 
-## Key Objectives
-- Demonstrate how **prompt engineering alone** can control LLM behavior in regulated banking environments
-- Enforce **single-source regulatory grounding** using FDIC Section 3.2
-- Prevent hallucinations, unsupported assumptions, and automated credit decisions
-- Support **loan officer regulatory interpretation**, not underwriting or advisory tasks
+## 🛠️ Installation
 
----
+### 1. Prerequisites
+- **Python 3.10+**
+- **Tesseract OCR**: Required for image-to-text processing.
+  - **Windows**: [Install Tesseract](https://github.com/UB-Mannheim/tesseract/wiki) and add it to your PATH.
+  - **Linux**: `sudo apt-get install tesseract-ocr`
 
-## Scope and Constraints
-The assistant is explicitly designed to:
-- Analyze loan-related questions and inputs under FDIC Section 3.2
-- Explain regulatory concepts defined in the policy
-- Identify applicable sections and subsections
-- Flag missing information or potential policy deviations
-- Acknowledge when regulatory guidance is insufficient or out of scope
+### 2. Setup Environment
+Clone the repository and install the required Python libraries:
 
-The assistant explicitly does **not**:
-- Approve or reject loans
-- Assign credit scores, risk ratings, or pricing
-- Provide financial, business, or operational advice
-- Use external knowledge or non-FDIC sources
+```bash
+pip install -r requirements.txt
+```
 
----
+*Note: Ensure you have an OpenAI API Key or a compatible local model endpoint.*
 
-## Regulatory Source of Truth
-- **FDIC RMS Manual of Examination Policies – Section 3.2 (Loans)**  
-  This document is treated as the **single and exclusive authoritative source** for all responses.
+## 📖 Usage
 
----
+1. Open the `Loan_Regulatory_Reasoning_Assistant.ipynb` notebook.
+2. Provide your API configuration in the `API Setup` cell.
+3. Run all cells to launch the **Gradio Dashboard**.
+4. **Upload** a loan application image or **Enter** a regulatory query to receive FDIC-aligned observations.
 
-## Evaluation Methodology
-The project includes an automated evaluation notebook that:
-- Assesses **system prompt quality** (task clarity, constraint enforcement, document grounding)
-- Assesses **response quality** against regulatory ground truth
-- Uses lightweight judge models to validate prompt effectiveness rather than model intelligence
+## 🏗️ Architecture
 
-This ensures behavior is driven by **prompt design**, not model capability.
+1. **Input Layer**: Text queries or Application form images (via OCR).
+2. **Context Engine**: Injects FDIC Section 3.2 text as the primary source of truth.
+3. **Logic Layer**: LLM applies system prompt constraints to generate neutral, examiner-style responses.
+4. **Evaluation Layer**: Analyzes responses against ground truth rubrics and visualizes performance.
 
----
+## ⚖️ Disclaimer
 
-## Project Files
-- `Loan_Regulatory_Reasoning_Assistant.ipynb`  
-  Main notebook containing prompt definitions, evaluation logic, and scoring
-- `manualy_converted_text.txt`  
-  Extracted regulatory reference text used for grounding
-- `section3-2.pdf`  
-  FDIC RMS Manual – Section 3.2 (Loans)
-
----
-
-## Intended Users
-- Bank loan officers
-- Compliance and risk teams
-- Regulatory and supervisory review contexts
-- Academic and training environments focused on regulated AI systems
-
----
-
-## Disclaimer
-This project is for **educational and demonstrative purposes only**.  
-It does not constitute legal, regulatory, financial, or lending advice.
-
----
-
-## Author
-Capstone Project – Navigate Labs  
-Prompt Engineering for Regulated Financial Systems
+This tool is for educational and regulatory reasoning assistance only. It does not provide financial advice, nor does it approve or reject loan applications.

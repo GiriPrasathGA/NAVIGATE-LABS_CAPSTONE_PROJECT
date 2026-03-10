@@ -1,0 +1,7 @@
+gradio
+openai
+pypdf
+pytesseract
+Pillow
+python-dotenv
+pdfplumber
